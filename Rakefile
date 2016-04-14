@@ -389,7 +389,7 @@ task :ci do
     next if timeup
     # Second test - create a new project on the fly that uses newly built Urho3D library in the build tree
     Dir.chdir scaffolding "#{ENV['APPVEYOR'] ? '' : '../Build/'}UsingBuildTree" do
-      puts "\nConfiguring downstream project using Urho3D library in its build tree...\n\n"; $stdout.flush
+      puts "Configuring downstream project using Urho3D library in its build tree...\n\n"; $stdout.flush
       system "bash -c 'rake cmake #{generator} URHO3D_HOME=#{ENV['APPVEYOR'] ? '../../Build' : '..'} URHO3D_LUA=1 && rake make #{test}'" or abort 'Failed to configure/build/test temporary downstream project using Urho3D as external library'
     end
   end
@@ -671,11 +671,7 @@ def scaffolding dir, project = 'Scaffolding', target = 'Main'
   dir.gsub!(/\//, '\\') if ENV['OS']
   build_script = <<EOF
 # Set CMake minimum version and CMake policy required by Urho3D-CMake-common module
-if (WIN32)
-    cmake_minimum_required (VERSION 3.2.3)      # Going forward all platforms will use this as minimum version
-else ()
-    cmake_minimum_required (VERSION 2.8.6)
-endif ()
+cmake_minimum_required (VERSION 3.2.3)
 if (COMMAND cmake_policy)
     cmake_policy (SET CMP0003 NEW)
     if (CMAKE_VERSION VERSION_GREATER 2.8.12 OR CMAKE_VERSION VERSION_EQUAL 2.8.12)
